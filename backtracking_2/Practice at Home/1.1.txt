@@ -1,0 +1,95 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Mia is running a charity event, and she has a list of donation amounts from various participants. Mia wants to know how many combinations of donations sum up to a specific target amount. Your task is to write a program that efficiently calculates the number of combinations of donations that sum up to the target amount. After finding the count of combinations, a simple mathematical operation is performed on the result.
+
+
+
+The operation is: multiply the subset sum by 4 and then subtracted by 2.
+
+
+
+Your goal is to help Mia compute the number of valid donation combinations that sum to the target, and then apply the required mathematical operation on the result.
+
+Input format :
+The first line contains an integer n, representing the number of participants in the event.
+
+The second line contains n space-separated integers, each representing the donation amount from each participant.
+
+The third line contains an integer targetAmount , representing the target sum for which the combinations need to sum up.
+
+Output format :
+The first line should print the total number of valid combinations that sum up to the targetAmount.
+
+The second line should print the result after applying the mathematical operation on the combination count.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+1 ≤ n ≤ 10
+
+1 ≤ donation ≤ 100
+
+1 ≤ targetAmount ≤ 100
+
+Sample test cases :
+Input 1 :
+4
+1 2 3 4
+5
+Output 1 :
+2
+6
+Input 2 :
+3
+10 20 30
+50
+Output 2 :
+1
+2
+Input 3 :
+5
+2 4 6 8 10
+16
+Output 3 :
+3
+10
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> donations(n);
+    for(int i = 0; i < n; i++) cin >> donations[i];
+    int target;
+    cin >> target;
+
+    int count = 0;
+    int total = 1 << n;
+
+    for(int mask = 0; mask < total; mask++) {
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            if(mask & (1 << i)) sum += donations[i];
+        }
+        if(sum == target) count++;
+    }
+
+    cout << count << endl;
+    cout << count * 4 - 2 << endl;
+
+    return 0;
+}

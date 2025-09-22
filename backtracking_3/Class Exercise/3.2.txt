@@ -1,0 +1,128 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Bob has a task to find a Hamiltonian cycle in a given undirected graph represented as an adjacency matrix. A Hamiltonian cycle is a cycle that visits every vertex exactly once and returns to the starting vertex. Bob needs to write a program that will determine if such a cycle exists and, if so, print the cycle. If no cycle is found, the program should output "No solution".
+
+
+
+Your task is to help Bob in implementing the same.
+
+Input format :
+The first line of input consists of a single integer, V, indicating the number of vertices in the graph.
+
+The following V lines each contain V integers, representing the adjacency matrix of the graph, where a '1' means an edge exists between two vertices, and a '0' means it does not.
+
+Output format :
+If a Hamiltonian cycle is found, print "Solution found" followed by the cycle as a series of vertices starting and ending at the starting vertex, space-separated on a new line.
+
+If no Hamiltonian cycle is found, print "No solution".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+3 ≤ V ≤ 8
+
+Sample test cases :
+Input 1 :
+8
+0 1 0 1 1 0 0 0
+1 0 1 0 0 1 0 0
+0 1 0 1 0 0 1 0
+1 0 1 0 0 0 0 1
+1 0 0 0 0 1 0 1
+0 1 0 0 1 0 1 0
+0 0 1 0 0 1 0 1
+0 0 0 1 1 0 1 0
+Output 1 :
+Solution found
+0 1 2 3 7 6 5 4 0 
+Input 2 :
+4
+0 1 1 1
+1 0 1 0
+1 1 0 1
+1 0 1 0
+Output 2 :
+Solution found
+0 1 2 3 0 
+Input 3 :
+3
+0 1 0
+1 0 1
+0 1 0
+Output 3 :
+No solution
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int V;
+vector<vector<int>> adj;
+vector<int> path;
+vector<bool> used;
+vector<int> solution;
+
+bool dfs(int curr, int depth) {
+    if (depth == V) {
+        if (adj[curr][path[0]] == 1) {
+            solution = path;
+            return true;
+        }
+        return false;
+    }
+    for (int v = 1; v < V; ++v) {
+        if (!used[v] && adj[curr][v] == 1) {
+            used[v] = true;
+            path[depth] = v;
+            if (dfs(v, depth + 1)) return true;
+            used[v] = false;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    if (!(cin >> V)) return 0;
+    adj.assign(V, vector<int>(V, 0));
+    for (int i = 0; i < V; ++i)
+        for (int j = 0; j < V; ++j)
+            cin >> adj[i][j];
+
+    path.assign(V, -1);
+    used.assign(V, false);
+
+    // start from vertex 0
+    path[0] = 0;
+    used[0] = true;
+
+    bool found = dfs(0, 1);
+
+    if (!found) {
+        cout << "No solution\n";
+    } else {
+        cout << "Solution found\n";
+        // print cycle: vertices in solution then return to 0
+        for (int i = 0; i < V; ++i) {
+            cout << solution[i] << " ";
+        }
+        cout << solution[0] << " \n";
+    }
+
+    return 0;
+}

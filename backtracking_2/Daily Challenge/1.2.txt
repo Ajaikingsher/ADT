@@ -1,0 +1,97 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Ravi is running an online store, and he has a list of product prices available for customers. A customer has a discount coupon with a certain balance. The task is to determine if there exists a combination of products whose total price matches the coupon balance. If such a combination exists, print the prices of the products. If there are multiple valid combinations, print the first occurring combination. If no such combination exists, print "No combination of products."
+
+
+
+Additionally, before printing the product combination, the program must first calculate and print the value of the expression (coupon_balance + 10) * 3, where coupon_balance is the discount coupon balance.
+
+
+
+Write a function that takes the prices of products, the number of available products, and the coupon balance as input. The function should determine if there's a valid combination of products whose prices sum up to the coupon balance. If a valid combination exists, it should print the prices of the first occurring combination. Otherwise, print "No combination of products."
+
+Input format :
+The first line contains an integer n, representing the number of products in the store.
+
+The second line contains n space-separated integers, representing the prices of the products.
+
+The third line contains an integer coupon_balance, representing the discount coupon balance.
+
+Output format :
+The first line should print the result of the mathematical expression (coupon_balance + 10) * 3.
+
+If there exists a combination of products whose prices sum up to the coupon_balance, print this combination.
+
+If no such combination exists, print "No combination of products".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+1 ≤ n ≤ 10
+
+1 ≤ price ≤ 50
+
+1 ≤ coupon_balance ≤ 150
+
+Sample test cases :
+Input 1 :
+4 
+21 28 31 37
+80
+Output 1 :
+270
+21 28 31
+Input 2 :
+4 
+21 25 31 37
+91
+Output 2 :
+303
+No combination of products
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> prices(n);
+    for(int i = 0; i < n; i++) cin >> prices[i];
+    int coupon;
+    cin >> coupon;
+
+    cout << (coupon + 10) * 3 << endl;
+
+    int total = 1 << n;
+    for(int mask = 1; mask < total; mask++) {
+        int sum = 0;
+        vector<int> subset;
+        for(int i = 0; i < n; i++) {
+            if(mask & (1 << i)) {
+                sum += prices[i];
+                subset.push_back(prices[i]);
+            }
+        }
+        if(sum == coupon) {
+            for(int x : subset) cout << x << " ";
+            cout << endl;
+            return 0;
+        }
+    }
+
+    cout << "No combination of products" << endl;
+    return 0;
+}

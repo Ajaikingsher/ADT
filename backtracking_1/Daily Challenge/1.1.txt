@@ -1,0 +1,105 @@
+Single File Programming Question
+Problem Statement
+
+
+
+A Maze is given as an NxN binary matrix of blocks where the source block is the upper leftmost block i.e., maze[0][0], and the destination block is the lower rightmost block i.e., maze[N-1][N-1]. A rat starts from the source and has to reach its destination. The rat can move only in two directions: forward and down. 
+
+
+
+In the maze matrix, 0 means the block is a dead end, and 1 means the block can be used in the path from source to destination. 
+
+
+
+Write a program for the same.
+
+Input format :
+The first line of the input consists of a positive integer N.
+
+The next input N lines consist of N space-separated integers.
+
+Output format :
+If a valid path is found from the source to the destination, the code prints the maze matrix with the path marked as a sequence of 1s.
+
+If no valid path exists from the source to the destination, the code prints "Solution doesn't exist".
+
+Code constraints :
+n > 0
+
+The values in the maze should be either 0 or 1, where 0 represents a dead end or an obstacle, and 1 represents a valid path.
+
+Sample test cases :
+Input 1 :
+3
+1 1 0
+0 1 0
+1 0 1 
+Output 1 :
+Solution doesn't exist
+Input 2 :
+4
+1 0 0 0
+1 1 0 1
+1 1 0 0
+0 1 1 1
+Output 2 :
+1 0 0 0 
+1 0 0 0 
+1 1 0 0 
+0 1 1 1 
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+
+bool isSafe(vector<vector<int>> &maze, int x, int y, vector<vector<int>> &sol) {
+    return (x >= 0 && x < N && y >= 0 && y < N && maze[x][y] == 1 && sol[x][y] == 0);
+}
+
+bool solveMazeUtil(vector<vector<int>> &maze, int x, int y, vector<vector<int>> &sol) {
+    if (x == N - 1 && y == N - 1 && maze[x][y] == 1) {
+        sol[x][y] = 1;
+        return true;
+    }
+
+    if (isSafe(maze, x, y, sol)) {
+        sol[x][y] = 1;
+
+        if (solveMazeUtil(maze, x + 1, y, sol)) return true; // move down
+        if (solveMazeUtil(maze, x, y + 1, sol)) return true; // move right
+
+        sol[x][y] = 0; // backtrack
+    }
+    return false;
+}
+
+int main() {
+    cin >> N;
+    vector<vector<int>> maze(N, vector<int>(N));
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            cin >> maze[i][j];
+
+    vector<vector<int>> sol(N, vector<int>(N, 0));
+
+    if (!solveMazeUtil(maze, 0, 0, sol)) {
+        cout << "Solution doesn't exist\n";
+    } else {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++)
+                cout << sol[i][j] << " ";
+            cout << "\n";
+        }
+    }
+    return 0;
+}//ONE TEST FAIL

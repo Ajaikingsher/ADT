@@ -1,0 +1,155 @@
+	Single File Programming Question
+Problem Statement
+
+
+
+Imagine a small robot mouse is placed in a square maze inside a lab. The maze is made up of N x N tiles, where each tile can either be open (marked as 1) or blocked (marked as 0). The robot starts at the top-left corner of the maze — this is like the entrance of the lab. Its goal is to reach the bottom-right corner, which is the exit.
+
+
+
+However, the robot can only move in one of four directions at a time — forward (down), right, backward (up), or left — just like moving along a grid of hallways. It cannot move diagonally or go through walls (tiles marked with 0).
+
+
+
+Your task is to help this robot find a valid route from the entrance to the exit using only the open paths (1). If a way exists, show the path; if not, indicate that it's trapped in the maze.
+
+
+
+Write a program for the same.
+
+Example
+
+Input
+
+4
+
+1 0 0 0
+
+1 1 0 1
+
+0 1 0 0
+
+1 1 1 1
+
+Output
+
+1 0 0 0 
+
+1 1 0 0 
+
+0 1 0 0 
+
+0 1 1 1 
+
+Explanation
+
+Mouse can reach destination using following path i.e. [0][0] -> [1][0] -> [1][1] -> [2][1] -> [3][1] ->  [3][2] -> [3][3] .
+
+Input format :
+The first line of the input consists of the value of n.
+
+Output format :
+If a valid path is found, print the solution matrix showing the path using 1s and the rest as 0s.
+
+Each row should be printed on a new line.
+
+Each number in a row should be separated by a single space.
+
+No extra spaces at the end of each line.
+
+If no path exists, print: "No path found"
+
+
+
+Refer to the sample output for the formatting spec
+
+Sample test cases :
+Input 1 :
+4
+1 0 0 0
+1 1 0 1
+0 1 0 0
+1 1 1 1
+Output 1 :
+1 0 0 0 
+1 1 0 0 
+0 1 0 0 
+0 1 1 1 
+Input 2 :
+4
+1 0 1 0
+1 0 0 0
+1 1 1 0
+1 1 1 1
+Output 2 :
+1 0 0 0 
+1 0 0 0 
+1 0 0 0 
+1 1 1 1 
+Input 3 :
+3
+1 1 0
+0 1 0
+1 0 1 
+Output 3 :
+No path found
+
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int n;
+vector<vector<int>> maze, sol;
+int dx[2] = {1, 0}; 
+int dy[2] = {0, 1};
+
+bool isSafe(int x, int y) {
+    return (x >= 0 && y >= 0 && x < n && y < n && maze[x][y] == 1 && sol[x][y] == 0);
+}
+
+bool solveMaze(int x, int y) {
+    if (x == n - 1 && y == n - 1 && maze[x][y] == 1) {
+        sol[x][y] = 1;
+        return true;
+    }
+    if (isSafe(x, y)) {
+        sol[x][y] = 1;
+        for (int k = 0; k < 2; k++) {
+            int nx = x + dx[k], ny = y + dy[k];
+            if (solveMaze(nx, ny)) return true;
+        }
+        sol[x][y] = 0;
+    }
+    return false;
+}
+
+int main() {
+    cin >> n;
+    maze.assign(n, vector<int>(n));
+    sol.assign(n, vector<int>(n, 0));
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            cin >> maze[i][j];
+
+    if (solveMaze(0, 0)) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++)
+                cout << sol[i][j] << " ";  // Always print with space
+            cout << endl;
+        }
+    } else {
+        cout << "No path found";
+    }
+    return 0;
+}

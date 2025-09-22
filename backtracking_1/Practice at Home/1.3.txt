@@ -1,0 +1,119 @@
+Single File Programming Question
+Problem statement
+
+
+
+The N-queens puzzle is the problem of placing n queens on a (n×n) chessboard such that no two queens can attack each other.
+
+Given an integer n, find all distinct solutions to the n-queens puzzle. Each solution contains distinct board configurations of the n-queens placement, where the solutions are a permutation of [1,2,3..n] in increasing order, here the number in the ith place denotes that the ith-column queen is placed in the row with that number. For eg below figure represents a chessboard [3 1 4 2].
+
+
+
+Example:
+
+Input:1
+
+Output: [1]
+
+Explanation: Only one queen can be placed in the single cell available.
+
+
+
+Input: 4
+
+Output: [2 4 1 3 ],[3 1 4 2 ]
+
+Explanation: These are the 2 possible solutions.
+
+Input format :
+The input consists of a single integer n, representing the size of the chessboard and the number of queens.
+
+Output format :
+The output prints a list of all distinct solutions to the N-Queens puzzle for the given n. Each solution should be a list of integers representing the row position of each queen in the respective column.
+
+The solutions should be sorted in lexicographically increasing order.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ n ≤ 9
+
+Sample test cases :
+Input 1 :
+1
+Output 1 :
+1
+Input 2 :
+4
+Output 2 :
+2 4 1 3
+3 1 4 2
+Input 3 :
+5
+Output 3 :
+1 3 5 2 4
+1 4 2 5 3
+2 4 1 3 5
+2 5 3 1 4
+3 1 4 2 5
+3 5 2 4 1
+4 1 3 5 2
+4 2 5 3 1
+5 2 4 1 3
+5 3 1 4 2
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+vector<int> board;
+vector<bool> colUsed, diag1, diag2;
+vector<vector<int>> solutions;
+
+void backtrack(int c) {
+    if (c == n) {
+        solutions.push_back(board);
+        return;
+    }
+    for (int r = 0; r < n; r++) {
+        if (colUsed[r]) continue;
+        int d1 = r + c;
+        int d2 = r - c + n - 1;
+        if (diag1[d1] || diag2[d2]) continue;
+        colUsed[r] = diag1[d1] = diag2[d2] = true;
+        board[c] = r + 1; // store as 1-indexed
+        backtrack(c + 1);
+        colUsed[r] = diag1[d1] = diag2[d2] = false;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n;
+
+    board.assign(n, 0);
+    colUsed.assign(n, false);
+    diag1.assign(2*n - 1, false);
+    diag2.assign(2*n - 1, false);
+
+    backtrack(0);
+
+    sort(solutions.begin(), solutions.end());
+
+    if (solutions.empty()) {
+        cout << "No solution\n";
+        return 0;
+    }
+
+    for (auto &sol : solutions) {
+        for (int i = 0; i < n; i++) {
+            cout << sol[i] << (i + 1 == n ? '\n' : ' ');
+        }
+    }
+    return 0;
+}

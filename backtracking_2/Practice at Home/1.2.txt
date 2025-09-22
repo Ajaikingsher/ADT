@@ -1,0 +1,103 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Sophia is organizing a sports event, and she has a list of registration fees from participants. Each participant paid a certain amount, and Sophia wants to know if there exists a combination of participants' fees that add up to a specific target amount, which is the amount she needs for the event’s expenses. Your task is to write a program that calculates the number of valid combinations of fees that sum up to this target amount. After finding the count of valid combinations, the program should calculate and display a simple mathematical result based on the target amount.
+
+
+
+The operation is as follows:
+
+The program will calculate the value of the expression (target amount - 5) * 2 before printing the valid fee combinations.
+
+
+
+If such a combination exists, print the participants' fees. If there are multiple valid combinations, print the first occurring combination. If no combination exists, print "No combination of fees."
+
+Input format :
+The first line contains an integer n, representing the number of participants in the event.
+
+The second line contains n space-separated integers, each representing the fee paid by a participant.
+
+The third line contains an integer targetAmount, representing the target amount needed for the event’s expenses.
+
+Output format :
+The first line should print the result of the mathematical expression (targetAmount - 5) * 2.
+
+If there exists a combination of fees whose sum equals the targetAmount, print this combination.
+
+If no such combination exists, print "No combination of fees".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+1 ≤ n ≤ 10
+
+1 ≤ fee ≤ 500
+
+1 ≤ targetAmount ≤ 150
+
+Sample test cases :
+Input 1 :
+5
+5 10 15 20 25
+30
+Output 1 :
+50
+5 10 15
+Input 2 :
+4
+10 15 20 30
+58
+Output 2 :
+106
+No combination of fees
+
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> fees(n);
+    for(int i = 0; i < n; i++) cin >> fees[i];
+    int target;
+    cin >> target;
+
+    cout << (target - 5) * 2 << endl;
+
+    int total = 1 << n;
+    for(int mask = 1; mask < total; mask++) {
+        int sum = 0;
+        vector<int> subset;
+        for(int i = 0; i < n; i++) {
+            if(mask & (1 << i)) {
+                sum += fees[i];
+                subset.push_back(fees[i]);
+            }
+        }
+        if(sum == target) {
+            for(int x : subset) cout << x << " ";
+            cout << endl;
+            return 0;
+        }
+    }
+
+    cout << "No combination of fees" << endl;
+    return 0;
+}

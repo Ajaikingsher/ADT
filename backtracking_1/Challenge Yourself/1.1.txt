@@ -1,0 +1,108 @@
+Single File Programming Question
+Problem Statement
+
+
+
+The problem is to print all the possible paths from the top left to the bottom right of an [m x n] matrix with the constraints that from each cell you can either move only to the right or down.
+
+
+
+Examples:
+
+Input
+
+2 3
+
+1 2 3
+
+4 5 6
+
+Output
+
+1 4 5 6
+
+1 2 5 6
+
+1 2 3 6
+
+Explanation
+
+Moving to the cells in this manner will give the right way to reach the destination from the starting point.
+
+Input format :
+The first line of input consists of an integer m, representing the number of rows in the matrix.
+
+The second line of input consists of an integer n, representing the number of columns in the matrix
+
+The following m lines each contain n integers, representing the matrix values.
+
+Output format :
+The output displays all the possible paths of the matrix as space-separated values.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ m, n ≤ 5
+
+Matrix values are integers.
+
+Sample test cases :
+Input 1 :
+2
+3
+1 2 3
+4 5 6
+Output 1 :
+1 4 5 6
+1 2 5 6
+1 2 3 6
+Input 2 :
+2 2
+1 2
+3 4
+Output 2 :
+1 3 4
+1 2 4
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void printPaths(vector<vector<int>> &mat, int i, int j, vector<int> &path) {
+    int m = mat.size();
+    int n = mat[0].size();
+
+    path.push_back(mat[i][j]);
+
+    if (i == m - 1 && j == n - 1) {
+        for (int k = 0; k < path.size(); k++) {
+            cout << path[k];
+            if (k != path.size() - 1) cout << " ";
+        }
+        cout << "\n";
+    } else {
+        if (i + 1 < m) printPaths(mat, i + 1, j, path);
+        if (j + 1 < n) printPaths(mat, i, j + 1, path);
+    }
+
+    path.pop_back();
+}
+
+int main() {
+    int m, n;
+    cin >> m >> n;
+    vector<vector<int>> mat(m, vector<int>(n));
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            cin >> mat[i][j];
+
+    vector<int> path;
+    printPaths(mat, 0, 0, path);
+    return 0;
+}

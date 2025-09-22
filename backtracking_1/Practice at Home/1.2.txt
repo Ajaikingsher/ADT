@@ -1,0 +1,143 @@
+Single File Programming Question
+Problem Statement
+
+
+
+You are given an N × N chessboard, and your task is to place N queens on the board in such a way that no two queens threaten each other. In chess, a queen can move horizontally, vertically, and diagonally. Therefore, no two queens should share the same row, column, or diagonal.
+
+
+
+Your goal is to find a valid arrangement of the queens on the chessboard where they do not threaten each other. If such an arrangement exists, display the positions of the queens on the board. If no valid arrangement exists, indicate that no solution can be found.
+
+Input format :
+The first line of input consists of a single integer n, representing the size of the chessboard (n x n).
+
+The second line contains an integer i, representing the row index (0-based) where the first queen is to be placed.
+
+The third line contains an integer j, representing the column index (0-based) where the first queen is to be placed.
+
+Output format :
+If there is at least one valid configuration that satisfies the N-Queens condition with the first queen placed at (i, j):
+
+Print each valid configuration as an n x n grid.
+
+Use 'Q' to represent a queen and '.' to represent an empty cell.
+
+Each row of the grid should be printed on a new line.
+
+Separate each configuration with a blank line.
+
+If no valid arrangement exists, print "No solution"
+
+
+
+Refer to the sample output for the formatting specification.
+
+Code constraints :
+1 ≤ N ≤ 10
+
+Each queen must be placed in a unique row and column.
+
+Sample test cases :
+Input 1 :
+4
+0
+1
+Output 1 :
+. Q . . 
+. . . Q 
+Q . . . 
+. . Q . 
+
+Input 2 :
+5
+0
+2
+Output 2 :
+. . Q . . 
+Q . . . . 
+. . . Q . 
+. Q . . . 
+. . . . Q 
+
+. . Q . . 
+. . . . Q 
+. Q . . . 
+. . . Q . 
+Q . . . . 
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, fixedRow, fixedCol;
+vector<int> board;
+vector<bool> colUsed, diag1, diag2;
+vector<vector<int>> solutions;
+
+void backtrack(int row) {
+    if (row == n) {
+        solutions.push_back(board);
+        return;
+    }
+    if (row == fixedRow) {
+        backtrack(row + 1);
+        return;
+    }
+    for (int c = 0; c < n; c++) {
+        if (colUsed[c]) continue;
+        int d1 = row + c;
+        int d2 = row - c + n - 1;
+        if (diag1[d1] || diag2[d2]) continue;
+        colUsed[c] = diag1[d1] = diag2[d2] = true;
+        board[row] = c;
+        backtrack(row + 1);
+        colUsed[c] = diag1[d1] = diag2[d2] = false;
+        board[row] = -1;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> n >> fixedRow >> fixedCol;
+
+    board.assign(n, -1);
+    colUsed.assign(n, false);
+    diag1.assign(2 * n - 1, false);
+    diag2.assign(2 * n - 1, false);
+
+    // Place the fixed queen
+    board[fixedRow] = fixedCol;
+    colUsed[fixedCol] = true;
+    diag1[fixedRow + fixedCol] = true;
+    diag2[fixedRow - fixedCol + n - 1] = true;
+
+    backtrack(0);
+
+    if (solutions.empty()) {
+        cout << "No solution\n";
+        return 0;
+    }
+
+    for (size_t k = 0; k < solutions.size(); k++) {
+        auto &sol = solutions[k];
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                cout << (sol[r] == c ? "Q " : ". ");
+            }
+            cout << "\n";
+        }
+        if (k + 1 < solutions.size()) cout << "\n";
+    }
+    return 0;
+}

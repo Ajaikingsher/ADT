@@ -1,0 +1,135 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Given an undirected graph and a number m, determine if the graph can be colored with at most m colors such that no two adjacent vertices of the graph are colored with the same color. 
+
+
+
+Note: Here, the coloring of a graph means the assignment of colors to all vertices. 
+
+
+
+Example
+
+
+
+Input:
+
+0 1 1 1
+
+1 0 1 0
+
+1 1 0 1
+
+1 0 1 0
+
+3
+
+
+
+Output:
+
+Solution Exists:
+
+1 2 3 2
+
+
+
+Explanation:
+
+A minimum of 3 colors is required for the above graph.
+
+Input format :
+The input consists of four lines each containing four space-separated integers (1 if connected, 0 if not), representing the adjacency matrix of a graph where each element represents the connection between vertices.
+
+The last line consists of an integer m, representing the number of colors available.
+
+Output format :
+If a solution exists:
+
+The first line prints "Solution Exists:".
+The second line prints the assigned colors for each vertex, separated by a space.
+
+
+If no solution exists, the output prints "Solution does not exist".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+The adjacency matrix has dimensions 4x4.
+
+1 ≤ m ≤ 4
+
+Sample test cases :
+Input 1 :
+0 1 1 1
+1 0 1 0
+1 1 0 1
+1 0 1 0
+3
+Output 1 :
+Solution Exists:
+1 2 3 2 
+Input 2 :
+0 1 1 1
+1 1 1 0
+1 1 1 1
+1 1 1 1
+2
+Output 2 :
+Solution does not exist
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int V = 4;
+
+bool isSafe(int v, vector<vector<int>> &graph, vector<int> &color, int c) {
+    for(int i = 0; i < V; i++) {
+        if(graph[v][i] && color[i] == c) return false;
+    }
+    return true;
+}
+
+bool graphColoringUtil(vector<vector<int>> &graph, int m, vector<int> &color, int v) {
+    if(v == V) return true;
+
+    for(int c = 1; c <= m; c++) {
+        if(isSafe(v, graph, color, c)) {
+            color[v] = c;
+            if(graphColoringUtil(graph, m, color, v+1)) return true;
+            color[v] = 0;
+        }
+    }
+    return false;
+}
+
+int main() {
+    vector<vector<int>> graph(V, vector<int>(V));
+    for(int i = 0; i < V; i++) {
+        for(int j = 0; j < V; j++) cin >> graph[i][j];
+    }
+    int m;
+    cin >> m;
+
+    vector<int> color(V, 0);
+    if(graphColoringUtil(graph, m, color, 0)) {
+        cout << "Solution Exists:" << endl;
+        for(int i = 0; i < V; i++) cout << color[i] << " ";
+        cout << endl;
+    } else {
+        cout << "Solution does not exist" << endl;
+    }
+    return 0;
+}

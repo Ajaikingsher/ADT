@@ -1,0 +1,152 @@
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a chessboard of size N x N. The objective is to place N queens on the board such that no two queens threaten each other (i.e., no two queens share the same row, column, or diagonal).
+
+
+
+Additionally, the board may already have K queens pre-placed at valid positions. You must:
+
+
+
+Verify that the initial placements are valid (i.e., not attacking each other).
+
+
+
+Try to place the remaining N - K queens.
+
+
+
+Print one valid arrangement if it exists.
+
+Input format :
+The first line of input contains two integers N and K, separated by a space:
+
+N: Size of the chessboard (1 ≤ N ≤ 20)
+
+K: Number of pre-placed queens (0 ≤ K ≤ N)
+
+The next K lines each contain two integers r and c separated by a space:
+
+These represent the row and column indices (0-based) of the pre-placed queens.
+
+Output format :
+If a valid solution exists, print the board as N lines, each containing N integers (0 or 1), where 1 represents a queen and 0 is an empty square.
+
+
+
+If no solution is possible, print: "No solution found."
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 < N < 10
+
+Sample test cases :
+Input 1 :
+4
+1
+0 1
+Output 1 :
+0 1 0 0 
+0 0 0 1 
+1 0 0 0 
+0 0 1 0 
+Input 2 :
+2
+1
+0 0
+Output 2 :
+No solution found.
+Input 3 :
+4
+2
+0 2
+1 0
+Output 3 :
+0 0 1 0 
+1 0 0 0 
+0 0 0 1 
+0 1 0 0 
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int N, K;
+vector<vector<int>> board;
+
+bool isSafe(int row, int col) {
+    for (int i = 0; i < row; i++) {
+        if (board[i][col] == 1) return false;
+    }
+    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j] == 1) return false;
+    }
+    for (int i = row - 1, j = col + 1; i >= 0 && j < N; i--, j++) {
+        if (board[i][j] == 1) return false;
+    }
+    return true;
+}
+
+bool solve(int row) {
+    if (row == N) return true;
+
+    for (int col = 0; col < N; col++) {
+        if (board[row][col] == 1) {
+            if (!isSafe(row, col)) return false;
+            return solve(row + 1);
+        }
+    }
+
+    for (int col = 0; col < N; col++) {
+        if (isSafe(row, col)) {
+            board[row][col] = 1;
+            if (solve(row + 1)) return true;
+            board[row][col] = 0;
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin >> N >> K;
+    board.assign(N, vector<int>(N, 0));
+
+    vector<pair<int, int>> queens(K);
+    for (int i = 0; i < K; i++) {
+        int r, c;
+        cin >> r >> c;
+        board[r][c] = 1;
+        queens[i] = {r, c};
+    }
+
+    for (auto [r, c] : queens) {
+        board[r][c] = 0;
+        if (!isSafe(r, c)) {
+            cout << "No solution found.";
+            return 0;
+        }
+        board[r][c] = 1;
+    }
+
+    if (solve(0)) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                cout << board[i][j] << " ";
+            }
+            cout << "\n";
+        }
+    } else {
+        cout << "No solution found.";
+    }
+    return 0;
+}

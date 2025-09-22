@@ -1,0 +1,71 @@
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a graph with a set of vertices and edges. The task is to determine if it can be colored using a given number of colors such that no adjacent vertices have the same color. 
+
+
+
+If possible, the program should print the assigned colors for each vertex; otherwise, it should indicate that no valid coloring exists.
+
+Input format :
+The first line contains an integer V, representing the number of vertices in the graph.
+
+The next V lines contain the adjacency matrix of the graph, where each line consists of V space-separated integers (0 or 1) representing the presence or absence of edges between vertices.
+
+The last line contains an integer m, representing the number of colors available for coloring.
+
+Output format :
+If a valid coloring exists, the output prints the assigned colors for each vertex, separated by spaces.
+
+If no valid coloring exists, the output prints "Solution does not exist".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ V ≤ 100
+
+1 ≤ m ≤ V
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 1
+1 0 1 0
+1 1 0 1
+1 0 1 0
+3
+Output 1 :
+1 2 3 2 
+Input 2 :
+3
+0 1 1
+1 0 0
+1 0 0
+2
+Output 2 :
+1 2 2 
+Input 3 :
+4
+0 1 0 1
+1 0 0 1
+0 0 0 0
+1 1 0 0
+2
+Output 3 :
+Solution does not exist
+
+
+
+
+
+
+
+
+
+
+
+

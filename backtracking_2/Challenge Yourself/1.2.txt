@@ -1,0 +1,164 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Alice and Bob are playing a strategic game on a 50 x 50 chessboard. There is one knight and a set of pawns placed on the board. The initial position of the knight is given by coordinates (kx, ky), and the positions of the pawns are given as a list of (x, y) coordinates.
+
+
+
+The game is turn-based, starting with Alice, followed by Bob, and so on. In each turn, the current player selects any remaining pawn on the board and captures it by moving the knight to its location in the fewest possible number of moves.
+
+
+
+The knight moves as in chess — in an "L" shape: two squares in one direction and then one square perpendicular. It has up to 8 possible moves. Only the selected pawn is captured in each turn. The knight can pass over other pawns without capturing them. The knight's position updates after each move to the captured pawn's location.
+
+
+
+Alice aims to maximize the total number of moves made during the game.
+Bob aims to minimize the total number of moves.
+
+
+Both players play optimally. Your task is to determine the maximum total number of moves that Alice can achieve during the game, assuming both play their best.
+
+
+
+Example:
+
+Input:
+
+0 0
+
+1 2
+
+2 4
+
+Output:
+
+3
+
+Explanation:
+
+Alice picks the pawn at (2, 4) and captures it in two moves: (0, 0) -> (1, 2) -> (2, 4). Note that the pawn at (1, 2) is not captured.
+Bob picks the pawn at (1, 2) and captures it in one move: (2, 4) -> (1, 2).
+Input format :
+The first line of the input consists of two integers kx and ky — the knight's starting coordinates.
+
+The remaining lines: Each line contains two integers xi and yi — the coordinates of a pawn on the board.
+
+Input ends at end-of-file (EOF).
+
+Output format :
+The output prints single integer — the maximum total number of moves made to capture all pawns, assuming both players play optimally.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+The given test cases fall under the following constraints:
+
+0 ≤ kx, ky < 50
+
+1 ≤ number of pawns ≤ 15
+
+0 ≤ xi, yi < 50 for each pawn
+
+All pawn positions are unique
+
+No pawn will be placed at the knight’s starting position
+
+Sample test cases :
+Input 1 :
+1 1
+0 0
+Output 1 :
+4
+Input 2 :
+0 2
+1 1
+2 2 
+3 3
+Output 2 :
+8
+Input 3 :
+0 0
+1 2
+2 4
+Output 3 :
+3
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 50;
+const int dx[8] = {1,1,-1,-1,2,2,-2,-2};
+const int dy[8] = {2,-2,2,-2,1,-1,1,-1};
+
+// BFS to find minimum knight moves between two points
+int knightDist(pair<int,int> start, pair<int,int> end) {
+    vector<vector<int>> dist(N, vector<int>(N, -1));
+    queue<pair<int,int>> q;
+    q.push(start);
+    dist[start.first][start.second] = 0;
+    while(!q.empty()) {
+        auto [x, y] = q.front(); q.pop();
+        if(x == end.first && y == end.second) return dist[x][y];
+        for(int i = 0; i < 8; i++) {
+            int nx = x + dx[i], ny = y + dy[i];
+            if(nx >=0 && nx < N && ny >=0 && ny < N && dist[nx][ny] == -1) {
+                dist[nx][ny] = dist[x][y] + 1;
+                q.push({nx, ny});
+            }
+        }
+    }
+    return INT_MAX; 
+}
+
+int main() {
+    int kx, ky;
+    cin >> kx >> ky;
+    vector<pair<int,int>> pawns;
+    int x, y;
+    while(cin >> x >> y) pawns.push_back({x, y});
+
+    int n = pawns.size();
+    vector<vector<int>> dist(n+1, vector<int>(n+1));
+    vector<pair<int,int>> points = {{kx, ky}};
+    for(auto &p : pawns) points.push_back(p);
+
+    for(int i = 0; i <= n; i++)
+        for(int j = 0; j <= n; j++)
+            dist[i][j] = knightDist(points[i], points[j]);
+
+    int full = (1<<n);
+    vector<vector<int>> dp(full, vector<int>(n+1, -1));
+
+    function<int(int,int,bool)> solve = [&](int mask, int pos, bool alice) {
+        if(mask == full-1) return 0;
+        if(dp[mask][pos] != -1) return dp[mask][pos];
+        int res = alice ? INT_MIN : INT_MAX;
+        for(int i = 0; i < n; i++) {
+            if(!(mask & (1<<i))) {
+                int nextMask = mask | (1<<i);
+                int moves = dist[pos][i+1];
+                int temp = moves + solve(nextMask, i+1, !alice);
+                if(alice) res = max(res, temp);
+                else res = min(res, temp);
+            }
+        }
+        return dp[mask][pos] = res;
+    };
+
+    cout << solve(0, 0, true) << endl;
+}
+
+
+
+
+
+
+
+
+

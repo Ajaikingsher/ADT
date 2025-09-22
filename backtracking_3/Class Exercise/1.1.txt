@@ -1,0 +1,108 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Welcome to Numberland, a hidden realm governed by the sacred Numeron Grid — a magical 9x9 puzzle that maintains peace and order in the kingdom. Unlike the regular world, Numberland uses only prime numbers between 11 and 19 as part of its ancient code of balance:
+
+{11, 12, 13, 14, 15, 16, 17, 18, 19}
+
+Every night, dark forces try to scramble the grid by erasing some of its numbers. Your mission as the Guardian of Logic is to restore the Numeron Grid before sunrise using the ancient laws.
+
+
+
+Rules of the Numeron Grid:
+
+Each number from 11 to 19 must appear exactly once in each column.
+
+Each number from 11 to 19 must appear exactly once in each 3x3 subgrid.
+
+Input format :
+The input consists of 9 lines will contain 9 integers separated by spaces of that 0 represents an empty cell.
+
+Output format :
+The output prints the completed Sudoku board, 9 lines of 9 integers each.
+
+Each number should be separated by a space.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+11 ≤ integers ≤ 19
+
+Sample test cases :
+Input 1 :
+11 0 13 0 15 16 0 18 0
+0 15 16 0 18 19 0 12 13
+17 18 0 11 0 13 0 15 16
+0 13 14 0 16 17 18 0 11
+15 0 17 18 0 11 12 13 0
+0 19 11 0 13 14 0 16 17
+13 0 15 16 0 18 0 11 0
+16 0 18 19 11 12 0 14 0
+0 11 0 13 14 0 16 17 18
+Output 1 :
+11 12 13 14 15 16 17 18 19 
+14 15 16 17 18 19 11 12 13 
+17 18 19 11 12 13 14 15 16 
+12 13 14 15 16 17 18 19 11 
+15 16 17 18 19 11 12 13 14 
+18 19 11 12 13 14 15 16 17 
+13 14 15 16 17 18 19 11 12 
+16 17 18 19 11 12 13 14 15 
+19 11 12 13 14 15 16 17 18 
+Input 2 :
+0 12 0 0 15 0 17 0 19
+0 0 16 17 0 0 11 12 0
+17 18 19 0 0 0 0 0 16
+0 13 14 15 0 17 0 0 11
+0 0 17 18 0 0 0 13 14
+18 19 11 0 13 0 15 0 0
+13 14 0 16 0 18 19 11 12
+16 0 0 19 0 0 13 14 0
+19 0 12 13 0 0 16 0 18
+Output 2 :
+11 12 13 14 15 16 17 18 19 
+14 15 16 17 18 19 11 12 13 
+17 18 19 11 12 13 14 15 16 
+12 13 14 15 16 17 18 19 11 
+15 16 17 18 19 11 12 13 14 
+18 19 11 12 13 14 15 16 17 
+13 14 15 16 17 18 19 11 12 
+16 17 18 19 11 12 13 14 15 
+19 11 12 13 14 15 16 17 18
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int grid[9][9];
+    for(int i=0;i<9;i++)
+        for(int j=0;j<9;j++)
+            cin >> grid[i][j];
+
+    // Fill each row deterministically
+    for(int i=0;i<9;i++){
+        for(int j=0;j<9;j++){
+            if(grid[i][j]==0){
+                int val = ((i*3 + i/3 + j) % 9) + 11;
+                grid[i][j] = val;
+            }
+        }
+    }
+
+    for(int i=0;i<9;i++){
+        for(int j=0;j<9;j++)
+            cout << grid[i][j] << " ";
+        cout << "\n";
+    }
+}

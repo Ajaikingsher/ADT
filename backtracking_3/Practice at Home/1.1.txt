@@ -1,0 +1,139 @@
+Single File Programming Question
+Problem Statement
+
+
+
+In the enchanted world of Arithmos, hidden within the ruins of the Forgotten Temple lies the Oracle Stone, an ancient magical relic said to contain the Prophecy of Balance. Legends say that the stone can only be awakened by feeding it a precise sequence of prime-infused energies.
+
+
+
+The High Council of Numeria has uncovered the awakening ritual. It requires:
+
+
+
+A sacred Threshold Prime (P): only prime energies strictly greater than this can be used.
+
+A divine Energy Sum (S): the exact total value that the chosen prime energies must combine to.
+
+
+
+The spellbinding law of the Oracle states:
+
+Each prime number can be used only once.
+
+All possible valid prime combinations must be discovered to fully awaken the Oracle.
+
+
+
+As the Royal Mathemage, you are entrusted with crafting the sacred algorithm that explores all paths of prime combinations through ancient backtracking magic. Only when every rightful path is uncovered will the Oracle of Arithmos reveal its truths and restore harmony to the lands.
+
+Input format :
+The first line of input contains the integer P, representing the threshold prime number.
+
+The second line of input contains an integer S, representing the energy sum.
+
+Output format :
+The output prints,
+
+If valid combination exists,
+
+Valid combinations:
+
+<combination>
+
+else prints,
+
+Valid combinations:
+
+No valid combination found.
+
+Each combination is printed on a new line, with space-separated prime numbers in ascending order.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+1 ≤ P < S
+
+Sample test cases :
+Input 1 :
+10
+36
+Output 1 :
+Valid combinations:
+13 23 
+17 19 
+Input 2 :
+20
+60
+Output 2 :
+Valid combinations:
+23 37 
+29 31 
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> sieve_primes(int n) {
+    if (n < 2) return {};
+    vector<char> is_prime(n+1, true);
+    is_prime[0] = is_prime[1] = false;
+    for (int p = 2; 1LL*p*p <= n; ++p) {
+        if (is_prime[p]) {
+            for (long long q = 1LL*p*p; q <= n; q += p) is_prime[q] = false;
+        }
+    }
+    vector<int> primes;
+    for (int i = 2; i <= n; ++i) if (is_prime[i]) primes.push_back(i);
+    return primes;
+}
+
+void backtrack(const vector<int>& primes, int start, int target, vector<int>& cur, vector<vector<int>>& out) {
+    if (target == 0) {
+        out.push_back(cur);
+        return;
+    }
+    for (int i = start; i < (int)primes.size(); ++i) {
+        int p = primes[i];
+        if (p > target) break; // pruning since primes sorted ascending
+        cur.push_back(p);
+        backtrack(primes, i + 1, target - p, cur, out);
+        cur.pop_back();
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int P, S;
+    if (!(cin >> P)) return 0;
+    if (!(cin >> S)) return 0;
+
+    // Generate all primes up to S, then keep those strictly greater than P
+    vector<int> all = sieve_primes(S);
+    vector<int> primes;
+    for (int p : all) if (p > P) primes.push_back(p);
+
+    // backtrack to find combinations
+    vector<vector<int>> combos;
+    vector<int> cur;
+    backtrack(primes, 0, S, cur, combos);
+
+    // Sort lexicographically to match judge's expected ordering
+    sort(combos.begin(), combos.end());
+
+    cout << "Valid combinations:\n";
+    if (combos.empty()) {
+        cout << "No valid combination found.\n";
+    } else {
+        for (const auto &c : combos) {
+            for (int v : c) cout << v << " "; // trailing space to match samples
+            cout << "\n";
+        }
+    }
+    return 0;
+}

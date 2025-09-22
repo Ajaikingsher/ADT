@@ -1,0 +1,118 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Given an adjacency matrix adj[][] of an undirected graph consisting of N vertices, the task is to find whether the graph contains a Hamiltonian Path or not. If found to be true, then print “Yes”. Otherwise, print “No”.
+
+
+
+Note: A Hamiltonian path is defined as the path in a directed or undirected graph which visits each and every vertex of the graph exactly once.
+
+
+
+Examples:
+
+
+
+Input: adj[][] = {{0, 1, 1, 1, 0}, {1, 0, 1, 0, 1}, {1, 1, 0, 1, 1}, {1, 0, 1, 0, 0}}
+
+Output: Yes
+
+Explanation:
+
+There exists a Hamiltonian Path for the given graph as shown in the image below:
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<vector<int>> adj;
+vector<int> visited;
+
+bool dfs(int u, int depth) {
+    if (depth == N) return true;
+    for (int v = 0; v < N; ++v) {
+        if (adj[u][v] && !visited[v]) {
+            visited[v] = 1;
+            if (dfs(v, depth + 1)) return true;
+            visited[v] = 0;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    if (!(cin >> N)) return 0;
+    adj.assign(N, vector<int>(N, 0));
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < N; ++j)
+            cin >> adj[i][j];
+
+    // Try starting from each vertex
+    for (int start = 0; start < N; ++start) {
+        visited.assign(N, 0);
+        visited[start] = 1;
+        if (dfs(start, 1)) {
+            cout << "YES\n";
+            return 0;
+        }
+    }
+
+    cout << "NO\n";
+    return 0;
+}
+
+
+
+
+
+
+Input: adj[][] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 0}, {0, 1, 0, 0}}
+
+Output: No
+
+Input format :
+The first line of input consists of an integer N, the number of vertices in the graph.
+
+The next N lines contain N integers each, representing the adjacency matrix of the graph. The integers are space-separated.
+
+Output format :
+The output prints a single line, "YES" if there is a Hamiltonian path in the graph, otherwise "NO".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+2 ≤ N ≤ 6
+
+Each value in the adjacency matrix is either 0 or 1.
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 1 0
+1 0 1 0 1
+1 1 0 1 1
+1 0 1 0 0
+Output 1 :
+YES
+Input 2 :
+4
+0 1 0 0
+1 0 1 1
+0 1 0 0
+0 1 0 0
+Output 2 :
+NO

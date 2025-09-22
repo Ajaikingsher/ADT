@@ -1,0 +1,148 @@
+Single File Programming Question
+Problem Statement:
+
+
+
+Given a maze represented as an N × N binary matrix, where each cell is either 1 (open path) or 0 (dead end), a rat is placed at the top-left cell (0, 0) and must reach the bottom-right cell (N-1, N-1). The rat can move only in two directions: down and right, and it can only travel through cells containing 1. Your task is to determine whether such a path exists. If a valid path is found, print the exact sequence of coordinates the rat follows from start to end, along with the corresponding movement directions using the letters D (down) and R (right). If no such path exists, print "No path found."
+
+Write a program for the same.
+
+Example
+
+Input
+
+4
+
+1 0 0 0
+
+1 1 0 1
+
+0 1 0 0
+
+1 1 1 1
+
+Output
+
+1 0 0 0 
+
+1 1 0 0 
+
+0 1 0 0 
+
+0 1 1 1 
+
+Explanation
+
+Rat can reach destination using following path i.e. [0][0] -> [1][0] -> [1][1] -> [2][1] -> [3][1] ->  [3][2] ->  [3][3] .
+
+Input format :
+The first line of the input consists of the value of n.
+
+Output format :
+If a path exists, print:
+
+
+
+Path: (x1, y1), (x2, y2), ..., (xn, yn)
+
+Moves: D, R, D, ...
+
+
+
+If no path exists, print:
+
+No path found.
+
+Sample test cases :
+Input 1 :
+4
+1 0 0 0
+1 1 0 1
+0 1 0 0
+1 1 1 1
+Output 1 :
+Path: (0,0), (1,0), (1,1), (2,1), (3,1), (3,2), (3,3)
+Moves: D, R, D, D, R, R
+Input 2 :
+4
+1 0 1 0
+1 0 0 0
+1 1 1 0
+1 1 1 1
+Output 2 :
+Path: (0,0), (1,0), (2,0), (3,0), (3,1), (3,2), (3,3)
+Moves: D, D, D, R, R, R
+Input 3 :
+3
+1 1 0
+0 1 0
+1 0 1 
+Output 3 :
+No path found.
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+
+bool isSafe(vector<vector<int>> &maze, int x, int y, vector<vector<int>> &visited) {
+    return (x >= 0 && x < N && y >= 0 && y < N && maze[x][y] == 1 && visited[x][y] == 0);
+}
+
+bool solveMaze(vector<vector<int>> &maze, int x, int y, vector<pair<int,int>> &path, vector<char> &moves, vector<vector<int>> &visited) {
+    if (x == N - 1 && y == N - 1) {
+        path.push_back({x, y});
+        return true;
+    }
+
+    if (isSafe(maze, x, y, visited)) {
+        visited[x][y] = 1;
+        path.push_back({x, y});
+
+        if (solveMaze(maze, x + 1, y, path, moves, visited)) {
+            moves.push_back('D');
+            return true;
+        }
+
+        if (solveMaze(maze, x, y + 1, path, moves, visited)) {
+            moves.push_back('R');
+            return true;
+        }
+
+        path.pop_back();
+        visited[x][y] = 0;
+    }
+    return false;
+}
+
+int main() {
+    cin >> N;
+    vector<vector<int>> maze(N, vector<int>(N));
+    for(int i = 0; i < N; i++)
+        for(int j = 0; j < N; j++)
+            cin >> maze[i][j];
+
+    vector<pair<int,int>> path;
+    vector<char> moves;
+    vector<vector<int>> visited(N, vector<int>(N, 0));
+
+    if (solveMaze(maze, 0, 0, path, moves, visited)) {
+        cout << "Path: ";
+        for (int i = 0; i < path.size(); i++) {
+            cout << "(" << path[i].first << "," << path[i].second << ")";
+            if (i != path.size() - 1) cout << ", ";
+        }
+        cout << "\nMoves: ";
+        reverse(moves.begin(), moves.end());
+        for (int i = 0; i < moves.size(); i++) {
+            cout << moves[i];
+            if (i != moves.size() - 1) cout << ", ";
+        }
+        cout << "\n";
+    } else {
+        cout << "No path found.\n";
+    }
+
+    return 0;
+}

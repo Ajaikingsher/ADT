@@ -1,0 +1,168 @@
+Single File Programming Question
+Problem Statement
+
+
+
+David is working on a grid arrangement problem. He needs to place n rooks on an n x n chessboard such that no two rooks can attack each other. A rook can move horizontally and vertically. Therefore, no two rooks should share the same row or column.
+
+
+
+Your task is to find a valid configuration where the rooks are placed on the board such that they don't threaten each other. The first rook is already placed at a given position (startRow, startCol), and your goal is to find all possible configurations for the remaining rooks.
+
+
+
+Rules:
+
+Each rook should be placed on a different row and column.
+
+No two rooks should be on the same row or column.
+
+The board's size will be N x N, where N is a positive integer between 1 and 10 (inclusive).
+
+Input format :
+The first line contains an integer n, representing the size of the board (n x n).
+
+The second line contains an integer startRow, representing the row where the first rook is placed (0-based index).
+
+The third line contains an integer startCol, representing the column where the first rook is placed (0-based index).
+
+Output format :
+For each valid configuration, print the chessboard where:
+
+Each cell containing a rook is represented by the number 1.
+Each empty cell is represented by the number 0.
+
+
+If there are multiple solutions, each solution should be printed on a separate grid.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ n ≤ 10
+
+0 ≤ startRow < n
+
+0 ≤ startCol < n
+
+Sample test cases :
+Input 1 :
+8
+0
+7
+Output 1 :
+0 0 0 0 0 0 0 1 
+0 1 0 0 0 0 0 0 
+0 0 0 1 0 0 0 0 
+1 0 0 0 0 0 0 0 
+0 0 0 0 0 0 1 0 
+0 0 0 0 1 0 0 0 
+0 0 1 0 0 0 0 0 
+0 0 0 0 0 1 0 0 
+
+0 0 0 0 0 0 0 1 
+0 1 0 0 0 0 0 0 
+0 0 0 0 1 0 0 0 
+0 0 1 0 0 0 0 0 
+1 0 0 0 0 0 0 0 
+0 0 0 0 0 0 1 0 
+0 0 0 1 0 0 0 0 
+0 0 0 0 0 1 0 0 
+
+0 0 0 0 0 0 0 1 
+0 0 1 0 0 0 0 0 
+1 0 0 0 0 0 0 0 
+0 0 0 0 0 1 0 0 
+0 1 0 0 0 0 0 0 
+0 0 0 0 1 0 0 0 
+0 0 0 0 0 0 1 0 
+0 0 0 1 0 0 0 0 
+
+0 0 0 0 0 0 0 1 
+0 0 0 1 0 0 0 0 
+1 0 0 0 0 0 0 0 
+0 0 1 0 0 0 0 0 
+0 0 0 0 0 1 0 0 
+0 1 0 0 0 0 0 0 
+0 0 0 0 0 0 1 0 
+0 0 0 0 1 0 0 0 
+
+Input 2 :
+4
+0
+1
+Output 2 :
+0 1 0 0 
+0 0 0 1 
+1 0 0 0 
+0 0 1 0 
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, startRow, startCol;
+vector<int> perm;
+vector<vector<int>> solutions;
+vector<bool> colUsed, diag1, diag2;
+
+void backtrack(int row){
+    if(row == n){
+        solutions.push_back(perm);
+        return;
+    }
+    if(row == startRow){
+        backtrack(row + 1);
+        return;
+    }
+    for(int c = 0; c < n; ++c){
+        if(colUsed[c]) continue;
+        int d1 = row + c;
+        int d2 = row - c + n - 1;
+        if(diag1[d1] || diag2[d2]) continue;
+        colUsed[c] = diag1[d1] = diag2[d2] = true;
+        perm[row] = c;
+        backtrack(row + 1);
+        colUsed[c] = diag1[d1] = diag2[d2] = false;
+        perm[row] = -1;
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    if(!(cin >> n)) return 0;
+    cin >> startRow >> startCol;
+
+    perm.assign(n, -1);
+    colUsed.assign(n, false);
+    diag1.assign(2*n - 1, false);
+    diag2.assign(2*n - 1, false);
+
+    // place the fixed queen
+    perm[startRow] = startCol;
+    colUsed[startCol] = true;
+    diag1[startRow + startCol] = true;
+    diag2[startRow - startCol + n - 1] = true;
+
+    backtrack(0);
+
+    for(size_t k = 0; k < solutions.size(); ++k){
+        auto &sol = solutions[k];
+        for(int r = 0; r < n; ++r){
+            for(int c = 0; c < n; ++c){
+                cout << (sol[r] == c ? 1 : 0) << " ";
+            }
+            cout << "\n";
+        }
+        if(k + 1 < solutions.size()) cout << "\n";
+    }
+    return 0;
+}

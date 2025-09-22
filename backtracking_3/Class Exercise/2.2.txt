@@ -1,0 +1,131 @@
+Single File Programming Question
+Problem Statement
+
+
+
+In the ancient kingdom of Numeria, there exists a legendary artifact known as the Prime Relic. This relic is the key to unlocking hidden knowledge preserved by the old scholars. However, the relic only reveals its secrets when presented with a specific combination of prime numbers.
+
+
+
+According to legend, the relic works with two magical numbers:
+
+
+
+P: a threshold prime number. Only prime numbers strictly greater than P are allowed.
+
+S: the exact sum that the selected primes must total to.
+
+
+
+The scholars have placed a magical constraint:
+
+
+
+Each prime number can be used at most once.
+
+All chosen prime numbers must be strictly greater than P and must sum up to S.
+
+If there are multiple valid combinations, all must be found and listed.
+
+Input format :
+The first line of input contains the integer P, representing the threshold prime number.
+
+The second line of input contains an integer S, representing the exact sum.
+
+Output format :
+The output prints,
+
+Valid combinations:
+
+<combination>
+
+Each combination is printed on a new line, with space-separated prime numbers in ascending order.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+1 ≤ P < S
+
+Sample test cases :
+Input 1 :
+3
+10
+Output 1 :
+Valid combinations:
+3 7 
+Input 2 :
+5
+50
+Output 2 :
+Valid combinations:
+7 11 13 19 
+7 43 
+13 37 
+19 31 
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPrime(int n) {
+    if (n < 2) return false;
+    if (n % 2 == 0) return n == 2;
+    for (int i = 3; 1LL * i * i <= n; i += 2)
+        if (n % i == 0) return false;
+    return true;
+}
+
+void backtrack(const vector<int>& primes, int start, int target, vector<int>& cur, vector<vector<int>>& out) {
+    if (target == 0) {
+        out.push_back(cur);
+        return;
+    }
+    for (int i = start; i < (int)primes.size(); ++i) {
+        int p = primes[i];
+        if (p > target) break; // pruning since primes sorted
+        cur.push_back(p);
+        backtrack(primes, i + 1, target - p, cur, out);
+        cur.pop_back();
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int P, S;
+    if (!(cin >> P)) return 0;
+    if (!(cin >> S)) return 0;
+
+    // Generate primes starting from P (inclusive) up to S (inclusive)
+    vector<int> primes;
+    for (int x = max(2, P); x <= S; ++x) {
+        if (isPrime(x)) primes.push_back(x);
+    }
+
+    // Ensure ascending order
+    sort(primes.begin(), primes.end());
+
+    vector<vector<int>> combos;
+    vector<int> cur;
+    backtrack(primes, 0, S, cur, combos);
+
+    // Sort combinations lexicographically for deterministic expected order
+    sort(combos.begin(), combos.end());
+
+    cout << "Valid combinations:\n";
+    if (combos.empty()) {
+        // If you want "No valid combination found." when none exist, uncomment next line:
+        cout << "No valid combination found.\n";
+    } else {
+        for (auto &c : combos) {
+            for (int v : c) cout << v << " "; // trailing space as in samples
+            cout << "\n";
+        }
+    }
+    return 0;
+}

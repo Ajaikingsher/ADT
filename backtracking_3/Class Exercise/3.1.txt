@@ -1,0 +1,183 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Alice is tasked with determining whether a given graph contains a Hamiltonian Cycle and, if it does, listing all such cycles. A Hamiltonian Cycle in a graph is a cycle that visits each vertex exactly once, returning to the starting vertex. 
+
+
+
+Your task is to help Alice write a program that takes a graph represented by an adjacency matrix and finds all possible Hamiltonian Cycles if they exist.
+
+Input format :
+The first line of input consists of an integer N, the number of vertices in the graph.
+
+The next N lines each contain a string which is the name of a vertex.
+
+The following N lines contain N integers each, representing the adjacency matrix of the graph.
+
+Each row of integers is space-separated.
+
+Output format :
+For each Hamiltonian Cycle found, print a line containing the names of the vertices in the cycle, comma-separated and enclosed in brackets.
+
+If no Hamiltonian Cycle exists, print "No Hamiltonian Cycle".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+3 ≤ N ≤ 9
+
+Vertex names are unique and consist of alphanumeric characters.
+
+The adjacency matrix elements are either 0 (no edge) or 1 (edge exists).
+
+Sample test cases :
+Input 1 :
+8
+a
+b 
+c 
+d 
+e 
+f 
+g 
+h
+0 1 0 0 0 0 0 1
+1 0 1 0 0 0 0 0
+0 1 0 1 0 0 0 1
+0 0 1 0 1 0 1 0
+0 0 0 1 0 1 0 0
+0 0 0 0 1 0 1 0
+0 0 0 1 0 1 0 1
+1 0 1 0 0 0 1 0
+Output 1 :
+['a', 'b ', 'c ', 'd ', 'e ', 'f ', 'g ', 'h', 'a']
+['a', 'h', 'g ', 'f ', 'e ', 'd ', 'c ', 'b ', 'a']
+Input 2 :
+4
+A 
+B 
+C 
+D
+0 1 1 0
+1 0 0 1
+1 0 0 1
+0 1 1 0
+Output 2 :
+['A ', 'B ', 'D', 'C ', 'A ']
+['A ', 'C ', 'D', 'B ', 'A ']
+Input 3 :
+7
+p
+q
+r
+s
+t
+u 
+v
+0 1 0 1 1 0 0
+1 0 1 0 0 0 0
+0 1 0 1 0 0 1
+1 0 1 0 0 1 0
+1 0 0 0 0 1 0
+0 0 0 1 1 0 1
+0 0 1 0 0 1 0
+Output 3 :
+No Hamiltonian Cycle
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<string> names;
+vector<vector<int>> adj;
+vector<int> path;
+vector<bool> used;
+vector<vector<string>> cycles;
+
+void dfs(int u) {
+    if ((int)path.size() == N) {
+        // check if last vertex connects back to start (0)
+        if (adj[u][0]) {
+            vector<string> cycle;
+            for (int idx : path) cycle.push_back(names[idx]);
+            cycle.push_back(names[0]); // return to start
+            cycles.push_back(cycle);
+        }
+        return;
+    }
+
+    for (int v = 0; v < N; ++v) {
+        if (adj[u][v] && !used[v]) {
+            used[v] = true;
+            path.push_back(v);
+            dfs(v);
+            path.pop_back();
+            used[v] = false;
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    if (!(cin >> N)) return 0;
+    string line;
+    getline(cin, line); // consume endline after N
+
+    names.resize(N);
+    for (int i = 0; i < N; ++i) {
+        // read full line (may contain spaces)
+        getline(cin, names[i]);
+        // If an empty line was read (possible if input had stray newline), read again
+        if (names[i].size() == 0 && i < N) {
+            getline(cin, names[i]);
+        }
+    }
+
+    adj.assign(N, vector<int>(N, 0));
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            int x;
+            cin >> x;
+            adj[i][j] = x;
+        }
+    }
+
+    // Start backtracking from vertex 0 to list cycles that start and end at names[0]
+    used.assign(N, false);
+    path.clear();
+    path.push_back(0);
+    used[0] = true;
+
+    dfs(0);
+
+    if (cycles.empty()) {
+        cout << "No Hamiltonian Cycle\n";
+    } else {
+        // Print each cycle in required format:
+        // ['a', 'b ', 'c ', ..., 'a']
+        for (auto &c : cycles) {
+            cout << "[";
+            for (size_t i = 0; i < c.size(); ++i) {
+                cout << "'" << c[i] << "'";
+                if (i + 1 < c.size()) cout << ", ";
+            }
+            cout << "]\n";
+        }
+    }
+
+    return 0;
+}

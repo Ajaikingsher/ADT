@@ -1,0 +1,85 @@
+Single File Programming Question
+Problem Statement
+
+
+
+In chess, each step of a knight comprises stepping by two squares horizontally and one square vertically, or by one square horizontally and two squares vertically. A knight making one step from location (0,0) of an infinite chess board would finish up at one of the following eight locations: (1,2), (−1,2), (1,−2), (−1,−2), (2,1), (−2,1), (2,−1), (−2,−1).
+
+
+
+Beginning from location (0,0), what is the minimum number of steps needed for a knight to get to some other arbitrary location (x,y)?
+
+
+
+
+
+Input format :
+The first line of input contains two integers x and y, representing the location of a knight on a chess board.
+
+Output format :
+The output displays a single integer m, representing the minimum number of steps needed for a knight to move from (0,0) to (x,y).
+
+Code constraints :
+1 ≤ x, y ≤ 8
+
+Sample test cases :
+Input 1 :
+1 2
+Output 1 :
+1
+Input 2 :
+2 4
+Output 2 :
+2
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int x, y;
+    cin >> x >> y;
+
+    vector<pair<int,int>> moves = {
+        {2,1},{1,2},{-1,2},{-2,1},
+        {-2,-1},{-1,-2},{1,-2},{2,-1}
+    };
+
+    queue<pair<int,int>> q;
+    map<pair<int,int>, int> dist;
+
+    q.push({0,0});
+    dist[{0,0}] = 0;
+
+    while(!q.empty()) {
+        auto [cx, cy] = q.front();
+        q.pop();
+
+        if(cx == x && cy == y) {
+            cout << dist[{cx,cy}] << endl;
+            return 0;
+        }
+
+        for(auto &m : moves) {
+            int nx = cx + m.first;
+            int ny = cy + m.second;
+            if(!dist.count({nx,ny})) {
+                dist[{nx,ny}] = dist[{cx,cy}] + 1;
+                q.push({nx,ny});
+            }
+        }
+    }
+    return 0;
+}
+
+
+
+
+
+
+

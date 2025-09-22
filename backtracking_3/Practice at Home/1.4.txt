@@ -1,0 +1,106 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Krishna is working on a problem related to graph theory. He wants to determine if a given graph contains a Hamiltonian cycle. A Hamiltonian cycle in a graph is a cycle that visits each vertex exactly once and returns to the starting vertex. Krishna needs a program that can verify the existence of such a cycle in any given undirected graph represented by its adjacency matrix.
+
+
+
+Your task is to help Krishna in implementing the same.
+
+Input format :
+The first line of input consists of a single integer V, the number of vertices in the graph.
+
+The next V lines contain V space-separated integers representing the adjacency matrix of the graph.
+
+Each integer is either 0 (no edge between the vertices) or 1 (an edge exists between the vertices).
+
+Output format :
+If the graph has a Hamiltonian cycle, print "The graph has a Hamiltonian cycle.".
+
+If the graph does not have a Hamiltonian cycle, print "The graph does not have a Hamiltonian cycle.".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+3 ≤ V ≤ 7
+
+Sample test cases :
+Input 1 :
+6
+0 1 0 0 0 0
+1 0 1 1 0 0
+0 1 0 0 0 1 
+0 1 0 0 1 1
+0 0 0 1 0 1
+0 0 1 1 1 0
+Output 1 :
+The graph does not have a Hamiltonian cycle.
+Input 2 :
+3
+0 1 1
+1 0 1
+1 1 0
+Output 2 :
+The graph has a Hamiltonian cycle.
+Input 3 :
+3
+0 1 0
+1 0 1
+0 1 0
+Output 3 :
+The graph does not have a Hamiltonian cycle.
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int V;
+vector<vector<int>> adj;
+vector<int> path;
+
+bool isHamiltonian(int pos) {
+    if (pos == V) {
+        return adj[path[pos - 1]][path[0]]; // check if last vertex connects to first
+    }
+
+    for (int v = 1; v < V; ++v) {
+        if (adj[path[pos - 1]][v] && find(path.begin(), path.begin() + pos, v) == path.begin() + pos) {
+            path[pos] = v;
+            if (isHamiltonian(pos + 1)) return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> V;
+    adj.assign(V, vector<int>(V, 0));
+    for (int i = 0; i < V; ++i)
+        for (int j = 0; j < V; ++j)
+            cin >> adj[i][j];
+
+    path.assign(V, -1);
+    path[0] = 0; // start from vertex 0
+
+    if (isHamiltonian(1))
+        cout << "The graph has a Hamiltonian cycle.\n";
+    else
+        cout << "The graph does not have a Hamiltonian cycle.\n";
+
+    return 0;
+}

@@ -1,0 +1,147 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Alex is a computer science student working on solving the famous N-Queens problem. He is trying to find all the possible configurations for placing N queens on an N x N chessboard such that no two queens attack each other. However, he wants to start by placing the first queen at a specific position on the board, and then find all the possible solutions for the remaining queens. 
+
+
+
+Help Alex by implementing an efficient solution to this problem.
+
+Input format :
+The first line of input consists of an integer n, representing the size of the chessboard (n x n).
+
+The second line consists of an integer startRow, representing the row index (0-indexed) where the first queen is placed.
+
+The third line consists of an integer startCol, representing the column index (0-indexed) where the first queen is placed.
+
+Output format :
+The first line of output prints "Q" or "." followed by a 2D grid representing the positions of the queens. The grid is printed row by row, with each queen represented by "Q" and an empty space represented by ".".
+
+If there are multiple solutions, print in the above format.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+1 ≤ n ≤ 10
+
+0 ≤ startRow < n
+
+0 ≤ startCol < n
+
+Sample test cases :
+Input 1 :
+8
+0
+0
+Output 1 :
+Q . . . . . . . 
+. . . . Q . . . 
+. . . . . . . Q 
+. . . . . Q . . 
+. . Q . . . . . 
+. . . . . . Q . 
+. Q . . . . . . 
+. . . Q . . . . 
+
+Q . . . . . . . 
+. . . . . Q . . 
+. . . . . . . Q 
+. . Q . . . . . 
+. . . . . . Q . 
+. . . Q . . . . 
+. Q . . . . . . 
+. . . . Q . . . 
+
+Q . . . . . . . 
+. . . . . . Q . 
+. . . Q . . . . 
+. . . . . Q . . 
+. . . . . . . Q 
+. Q . . . . . . 
+. . . . Q . . . 
+. . Q . . . . . 
+
+Q . . . . . . . 
+. . . . . . Q . 
+. . . . Q . . . 
+. . . . . . . Q 
+. Q . . . . . . 
+. . . Q . . . . 
+. . . . . Q . . 
+. . Q . . . . . 
+
+Input 2 :
+4
+0
+2
+Output 2 :
+. . Q . 
+Q . . . 
+. . . Q 
+. Q . . 
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, startRow, startCol;
+vector<vector<string>> solutions;
+
+bool isSafe(vector<string> &board, int row, int col) {
+    for (int i = 0; i < row; i++) {
+        if (board[i][col] == 'Q') return false;
+    }
+    for (int i = row-1, j = col-1; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j] == 'Q') return false;
+    }
+    for (int i = row-1, j = col+1; i >= 0 && j < n; i--, j++) {
+        if (board[i][j] == 'Q') return false;
+    }
+    return true;
+}
+
+void solve(vector<string> &board, int row) {
+    if (row == n) {
+        solutions.push_back(board);
+        return;
+    }
+    if (row == startRow) {
+        solve(board, row+1);
+        return;
+    }
+    for (int col = 0; col < n; col++) {
+        if (isSafe(board, row, col)) {
+            board[row][col] = 'Q';
+            solve(board, row+1);
+            board[row][col] = '.';
+        }
+    }
+}
+
+int main() {
+    cin >> n;
+    cin >> startRow >> startCol;
+
+    vector<string> board(n, string(n, '.'));
+    board[startRow][startCol] = 'Q';
+
+    solve(board, 0);
+
+    for (auto &sol : solutions) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << sol[i][j] << " ";
+            }
+            cout << "\n";
+        }
+        cout << "\n";
+    }
+
+    return 0;
+}

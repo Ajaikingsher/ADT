@@ -1,0 +1,115 @@
+Single File Programming Question
+Problem Statement
+
+
+
+You are given an undirected graph with N vertices. Implement a function longest_hamiltonian_cycle to find the longest Hamiltonian cycle in the graph. A Hamiltonian cycle is a cycle that visits every vertex exactly once, except for the starting and ending vertices, which are the same.
+
+Input format :
+The first line of input consists of an integer N representing the number of vertices in the graph.
+
+The next N lines each contain N space-separated integers, representing the adjacency matrix of the graph. The value at graph[i][j] is 1 if there is an edge between vertex i and vertex j and 0 otherwise.
+
+Output format :
+If a Hamiltonian cycle exists, print "Longest Hamiltonian Cycle:" followed by the vertices of the longest cycle found in order within a square bracket separated by a comma.
+
+If no Hamiltonian cycle exists, print "No Hamiltonian Cycle found".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+3 ≤ V ≤ 7
+
+Sample test cases :
+Input 1 :
+4
+0 1 1 0
+1 0 1 1
+1 1 0 1
+0 1 1 0
+Output 1 :
+Longest Hamiltonian Cycle: [0, 1, 3, 2]
+Input 2 :
+3
+0 1 1
+1 0 1
+1 1 0
+Output 2 :
+Longest Hamiltonian Cycle: [0, 1, 2]
+Input 3 :
+3
+0 1 0
+1 0 1
+0 1 0
+Output 3 :
+No Hamiltonian Cycle found
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int N;
+vector<vector<int>> graph;
+vector<int> longestCycle;
+
+void dfs(int v, vector<int>& path, vector<bool>& visited) {
+    path.push_back(v);
+    visited[v] = true;
+
+    if (path.size() == N) {
+        // Check if it forms a Hamiltonian cycle
+        if (graph[v][path[0]] == 1) {
+            if (path.size() > longestCycle.size()) {
+                longestCycle = path; // store the longest cycle
+            }
+        }
+    } else {
+        for (int u = 0; u < N; ++u) {
+            if (graph[v][u] && !visited[u]) {
+                dfs(u, path, visited);
+            }
+        }
+    }
+
+    visited[v] = false;
+    path.pop_back();
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    cin >> N;
+    graph.assign(N, vector<int>(N));
+    for (int i = 0; i < N; ++i)
+        for (int j = 0; j < N; ++j)
+            cin >> graph[i][j];
+
+    vector<int> path;
+    vector<bool> visited(N, false);
+
+    dfs(0, path, visited);
+
+    if (!longestCycle.empty()) {
+        cout << "Longest Hamiltonian Cycle: [";
+        for (int i = 0; i < longestCycle.size(); ++i) {
+            cout << longestCycle[i];
+            if (i != longestCycle.size() - 1) cout << ", ";
+        }
+        cout << "]\n";
+    } else {
+        cout << "No Hamiltonian Cycle found\n";
+    }
+
+    return 0;
+}

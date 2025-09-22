@@ -1,0 +1,124 @@
+Single File Programming Question
+Problem Statement
+
+
+
+You are given a 1-indexed 8 x 8 chessboard containing three pieces: a white rook, a white bishop, and a black queen. You are provided with six integers: a b c d e f representing the positions of these pieces:
+
+(a, b) is the position of the white rook,
+(c, d) is the position of the white bishop,
+(e, f) is the position of the black queen.
+The goal is to determine the minimum number of moves required for the white rook or white bishop to capture the black queen. 
+
+Rules:
+
+The white rook can move any number of squares either vertically or horizontally but cannot jump over other pieces.
+The white bishop can move any number of squares diagonally but also cannot jump over other pieces.
+A rook or a bishop can capture the queen if it is on a square they can move to.
+The black queen does not move.
+Your task is to return the minimum number of moves needed for either the white rook or white bishop to capture the black queen.
+
+
+
+Example 1:
+
+Input: 1 1 8 8 2 3
+
+Output: 2
+
+Explanation: It is impossible to capture the black queen in less than two moves, as it is not under immediate attack from any white piece initially.
+
+- Move the white rook to (1, 3)
+
+- Move the white rook to (2, 3)
+
+Example 2:
+
+Input: 5 3 3 4 5 2
+
+Output: 1
+
+Explanation: Can capture the black queen in a single move by doing one of the following: 
+
+- Move the white rook to (5, 2)
+
+- Move the white bishop to (5, 2)
+
+Input format :
+The input consists of integers representing the values of a b c d e f.
+
+a, b is the position of the white rook
+
+c, d is the position of the white bishop
+
+e, f is the position of the black queen
+
+Output format :
+The output prints a single integer representing the minimum number of moves required to capture the black queen.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+1 ≤ a, b, c, d, e, f ≤ 8
+
+No two pieces are on the same square.
+
+Sample test cases :
+Input 1 :
+1 1 8 8 2 3
+Output 1 :
+2
+Input 2 :
+5 3 3 4 5 2
+Output 2 :
+1
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isBlockedRook(int a, int b, int c, int d, int e, int f) {
+    if (a == e) {
+        if (b < f && b < d && d < f) return true;
+        if (b > f && b > d && d > f) return true;
+    }
+    if (b == f) {
+        if (a < e && a < c && c < e) return true;
+        if (a > e && a > c && c > e) return true;
+    }
+    return false;
+}
+
+bool isBlockedBishop(int c, int d, int a, int b, int e, int f) {
+    if (abs(c - e) == abs(d - f)) {
+        int dx = (e > c ? 1 : -1);
+        int dy = (f > d ? 1 : -1);
+        int x = c + dx, y = d + dy;
+        while (x != e && y != f) {
+            if (x == a && y == b) return true;
+            x += dx; y += dy;
+        }
+    }
+    return false;
+}
+
+int main() {
+    int a, b, c, d, e, f;
+    cin >> a >> b >> c >> d >> e >> f;
+
+    int ans = 3;
+
+    if (a == e && !isBlockedRook(a,b,c,d,e,f)) ans = min(ans,1);
+    if (b == f && !isBlockedRook(a,b,c,d,e,f)) ans = min(ans,1);
+    if (abs(c-e) == abs(d-f) && !isBlockedBishop(c,d,a,b,e,f)) ans = min(ans,1);
+
+    if (ans == 3) ans = 2;
+
+    cout << ans << endl;
+    return 0;
+}

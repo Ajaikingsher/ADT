@@ -1,0 +1,134 @@
+Single File Programming Question
+Problem Statement
+
+
+
+In the distant future, humanity discovers an ancient alien artifact buried deep beneath the surface of Mars—a mysterious AI core known as the Prime Code, left behind by the advanced civilization of Zenthari. According to deciphered fragments, the Prime Code holds the coordinates to hidden knowledge across the galaxy. However, to activate it, explorers must provide a specific combination of prime numbers. 
+
+
+
+These numbers must be strictly greater than a given threshold value P and must add up to an exact value S, known as the Sum Seal. The artifact enforces strict rules—each prime can be used only once, and all valid combinations must be revealed to unlock its secrets. As the lead mission engineer, you are tasked with writing a decoding algorithm to find all such combinations. Only then will the Prime Code unlock the next chapter in mankind's journey through the stars.
+
+Input format :
+The first line of input contains the integer P, representing the threshold prime number.
+
+The second line of input contains an integer S, representing the exact sum.
+
+Output format :
+The output prints,
+
+If valid combination exists,
+
+Valid combinations:
+
+<combination>
+
+else prints,
+
+Valid combinations:
+
+No valid combination found.
+
+Each combination is printed on a new line, with space-separated prime numbers in ascending order.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+1 ≤ P < S
+
+Sample test cases :
+Input 1 :
+5
+80
+Output 1 :
+Valid combinations:
+5 7 31 37 
+5 11 17 47 
+5 11 23 41 
+5 13 19 43 
+7 11 19 43 
+7 13 17 43 
+7 13 19 41 
+7 13 23 37 
+7 13 29 31 
+7 17 19 37 
+7 19 23 31 
+7 73 
+11 13 19 37 
+11 17 23 29 
+13 17 19 31 
+13 67 
+19 61 
+37 43 
+Input 2 :
+25
+65
+Output 2 :
+Valid combinations:
+No valid combination found.
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i * i <= n; ++i)
+        if (n % i == 0) return false;
+    return true;
+}
+
+void backtrack(const vector<int>& primes, int start, int target, vector<int>& cur, vector<vector<int>>& out) {
+    if (target == 0) {
+        out.push_back(cur);
+        return;
+    }
+    for (int i = start; i < (int)primes.size(); ++i) {
+        int p = primes[i];
+        if (p > target) break;            // pruning
+        cur.push_back(p);
+        backtrack(primes, i + 1, target - p, cur, out);
+        cur.pop_back();
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int P, S;
+    if (!(cin >> P >> S)) return 0;
+
+    // Include P itself if prime (to match sample expected output)
+    vector<int> primes;
+    for (int x = P; x <= S; ++x) {
+        if (isPrime(x)) primes.push_back(x);
+    }
+
+    sort(primes.begin(), primes.end());
+
+    vector<vector<int>> combos;
+    vector<int> cur;
+    backtrack(primes, 0, S, cur, combos);
+
+    // Sort lexicographically to ensure exact expected ordering
+    sort(combos.begin(), combos.end());
+
+    cout << "Valid combinations:\n";
+    if (combos.empty()) {
+        cout << "No valid combination found.\n";
+    } else {
+        for (auto &c : combos) {
+            for (int v : c) cout << v << " "; // trailing space intentional
+            cout << "\n";
+        }
+    }
+    return 0;
+}

@@ -1,0 +1,181 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Emily is developing a program to find all Hamiltonian cycles in a graph. The graph is represented using adjacency lists, where each vertex has a list of its neighbors. Emily needs to ensure that her program can explore all possible vertex combinations to find cycles that visit each vertex exactly once and return to the starting vertex.
+
+
+
+Your task is to help Emily in implementing the same.	
+
+Input format :
+The first line contains an integer, N, the number of vertices.
+
+The next N lines each contain a single string representing the name of a vertex.
+
+Subsequent lines each contain two space-separated strings v1 v2 until a line with -1 is encountered, indicating the end of vertex connections.
+
+The final line after vertex connections contains a string representing the start vertex name for finding cycles.
+
+Output format :
+If a Hamiltonian cycle exists, print the cycle in the format [vertex1, vertex2, ..., vertex1]. Multiple cycles printed on separate lines.
+
+If no Hamiltonian cycle exists, print "No Hamiltonian Cycle".
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+4 ≤ N ≤ 8
+
+Vertex names are unique and consist of alphanumeric characters.
+
+Sample test cases :
+Input 1 :
+8
+a
+b
+c
+d
+e
+f
+g
+h
+a b
+b c
+c d
+c h
+d e
+d g
+e f
+f g
+g h
+h a
+-1
+a
+Output 1 :
+[a, b, c, d, e, f, g, h, a]
+[a, h, g, f, e, d, c, b, a]
+Input 2 :
+4
+A
+B
+C
+D
+A B
+B C
+C D
+D A
+-1
+A
+Output 2 :
+[A, B, C, D, A]
+[A, D, C, B, A]
+Input 3 :
+5
+0
+1
+2
+3
+4
+0 1
+1 2
+1 3
+0 3
+1 4
+2 4
+-1
+0
+Output 3 :
+No Hamiltonian Cycle
+
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void findHamiltonianCycles(int curr, vector<int>& path, vector<vector<int>>& adj, vector<bool>& visited, int start, vector<vector<int>>& cycles) {
+    int N = adj.size();
+    if (path.size() == N) {
+        for (int nei : adj[curr]) {
+            if (nei == start) {
+                vector<int> cycle = path;
+                cycle.push_back(start);
+                cycles.push_back(cycle);
+                return;
+            }
+        }
+        return;
+    }
+
+    for (int nei : adj[curr]) {
+        if (!visited[nei]) {
+            visited[nei] = true;
+            path.push_back(nei);
+            findHamiltonianCycles(nei, path, adj, visited, start, cycles);
+            path.pop_back();
+            visited[nei] = false;
+        }
+    }
+}
+
+int main() {
+    int N;
+    cin >> N;
+    vector<string> names(N);
+    unordered_map<string, int> nameToIndex;
+    for (int i = 0; i < N; i++) {
+        cin >> names[i];
+        nameToIndex[names[i]] = i;
+    }
+
+    vector<vector<int>> adj(N);
+    while (true) {
+        string u, v;
+        cin >> u;
+        if (u == "-1") break;
+        cin >> v;
+        int ui = nameToIndex[u];
+        int vi = nameToIndex[v];
+        adj[ui].push_back(vi);
+        adj[vi].push_back(ui);
+    }
+
+    string startName;
+    cin >> startName;
+    int start = nameToIndex[startName];
+
+    vector<int> path;
+    vector<bool> visited(N, false);
+    path.push_back(start);
+    visited[start] = true;
+    vector<vector<int>> cycles;
+
+    findHamiltonianCycles(start, path, adj, visited, start, cycles);
+
+    if (cycles.empty()) {
+        cout << "No Hamiltonian Cycle\n";
+    } else {
+        for (auto &cycle : cycles) {
+            cout << "[";
+            for (int i = 0; i < cycle.size(); i++) {
+                cout << names[cycle[i]];
+                if (i != cycle.size() - 1) cout << ", ";
+            }
+            cout << "]\n";
+        }
+    }
+    return 0;
+}

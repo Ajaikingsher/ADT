@@ -1,0 +1,122 @@
+Single File Programming Question
+Problem Statement
+
+
+
+In the ancient magical realm of Arcanthia, deep within the Echoing Library of Elders, lies a sealed tome known as the Scroll of Sages. Said to contain the incantations of forgotten wisdom, the scroll can only be unsealed by solving a sacred numerical riddle left behind by the First Mage Council.
+
+
+
+The conditions are clear: a set of prime numbers must be chosen such that each one is strictly greater than a magical threshold P, and together, they must sum to an exact value S, called the Mystic Total. No prime number may be repeated in this ritual.
+
+
+
+As the kingdom’s youngest and most gifted spell-coder, you are entrusted with crafting a decoding charm—a precise algorithm—to uncover all valid prime combinations that satisfy the ancient conditions. Only when all such combinations are revealed will the Scroll awaken, and the arcane secrets of Arcanthia return once more.
+
+Input format :
+The first line of input contains the integer P, representing the threshold prime number.
+
+The second line of input contains an integer S, representing the exact sum.
+
+Output format :
+The output prints,
+
+If valid combination exists,
+
+Valid combinations:
+
+<combination>
+
+else prints,
+
+Valid combinations:
+
+No valid combination found.
+
+Each combination is printed on a new line, with space-separated prime numbers in ascending order.
+
+
+
+Refer to the sample output for formatting specifications.
+
+Code constraints :
+1 ≤ P < S
+
+Sample test cases :
+Input 1 :
+7
+55
+Output 1 :
+Valid combinations:
+7 11 37 
+7 17 31 
+7 19 29 
+11 13 31 
+13 19 23 
+Input 2 :
+8
+88
+Output 2 :
+Valid combinations:
+11 13 17 47 
+11 13 23 41 
+11 17 19 41 
+11 17 23 37 
+11 17 29 31 
+17 19 23 29 
+17 71 
+29 59 
+41 47 
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i * i <= n; i++)
+        if (n % i == 0) return false;
+    return true;
+}
+
+void findCombinations(vector<int>& primes, int idx, int target, vector<int>& combo, vector<vector<int>>& result) {
+    if (target == 0) {
+        result.push_back(combo);
+        return;
+    }
+    for (int i = idx; i < primes.size(); i++) {
+        if (primes[i] > target) break;
+        combo.push_back(primes[i]);
+        findCombinations(primes, i + 1, target - primes[i], combo, result);
+        combo.pop_back();
+    }
+}
+
+int main() {
+    int P, S;
+    cin >> P >> S;
+
+    vector<int> primes;
+    for (int i = P; i <= S; i++) // include P itself
+        if (isPrime(i)) primes.push_back(i);
+
+    vector<int> combo;
+    vector<vector<int>> result;
+    findCombinations(primes, 0, S, combo, result);
+
+    cout << "Valid combinations:\n";
+    if (result.empty()) {
+        cout << "No valid combination found.\n";
+    } else {
+        for (auto &c : result) {
+            for (int i = 0; i < c.size(); i++) {
+                cout << c[i];
+                if (i != c.size() - 1) cout << " ";
+            }
+            cout << " \n";
+        }
+    }
+    return 0;
+}

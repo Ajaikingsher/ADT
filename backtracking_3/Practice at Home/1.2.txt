@@ -1,0 +1,47 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Given an undirected complete graph with N vertices (N>2), find the number of different Hamiltonian cycles in the graph. A Hamiltonian cycle is a cycle that visits each vertex exactly once and returns to the starting vertex.
+
+Input format :
+The input consists of a single integer N, representing the number of vertices in the complete graph.
+
+Output format :
+The output prints a single integer representing the number of Hamiltonian cycles in the complete graph with
+
+N vertices.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+3 ≤ N ≤ 10
+
+Sample test cases :
+Input 1 :
+6
+Output 1 :
+60
+Input 2 :
+4
+Output 2 :
+3
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    long long N;
+    if (!(cin >> N)) return 0;
+    unsigned long long fact = 1;
+    for (long long i = 1; i <= N-1; ++i) fact *= (unsigned long long)i;
+    cout << (fact / 2ULL) << endl;
+    return 0;
+}

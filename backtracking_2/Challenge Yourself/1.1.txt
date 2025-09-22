@@ -1,0 +1,97 @@
+Single File Programming Question
+Problem Statement
+
+
+
+Lucy has a set of integers, and she is interested in finding out how many subsets from this set sum up to a specific target number. Your task is to write a program that efficiently calculates the number of subsets that sum up to a given target sum.
+
+
+
+After finding the count of subsets, a simple mathematical operation is performed on the result: multiply the count by 2 and add 10.
+
+
+
+You need to implement a function that computes the number of subsets that sum to the target and applies the mathematical operation to the result.
+
+Input format :
+The first line of input consists of a single integer n, representing the number of elements in the set.
+
+The second line consists of an integer, representing the elements of the set. These integers are space-separated.
+
+The third line consists of a single integer, representing the target sum for which the subsets need to sum up.
+
+Output format :
+The first line of output should print a single integer that represents the number of subsets whose sum equals the sumValue.
+
+The second line should print the result after applying the operation.
+
+
+
+Refer to the sample output for the formatting specifications.
+
+Code constraints :
+In this scenario, the given test cases will fall under the following constraints:
+
+1 ≤ n ≤ 10
+
+1 ≤ elements of the set ≤ 100
+
+1 ≤ sumValue ≤ 100
+
+Sample test cases :
+Input 1 :
+4
+3 1 2 4
+6
+Output 1 :
+2
+14
+Input 2 :
+5
+1 2 3 4 5
+5
+Output 2 :
+3
+16
+Input 3 :
+6
+1 2 3 4 5 6
+10
+Output 3 :
+5
+20
+
+
+
+
+
+
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    for(int i = 0; i < n; i++) cin >> arr[i];
+    int target;
+    cin >> target;
+
+    int count = 0;
+    int total = 1 << n;
+    for(int mask = 0; mask < total; mask++) {
+        int sum = 0;
+        for(int i = 0; i < n; i++) {
+            if(mask & (1 << i)) sum += arr[i];
+        }
+        if(sum == target) count++;
+    }
+
+    cout << count << endl;
+    cout << count * 2 + 10 << endl;
+    return 0;
+}
