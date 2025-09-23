@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 8; // board size
+
+// Moves of a knight
+int dx[8] = {2, 1, -1, -2, -2, -1, 1, 2};
+int dy[8] = {1, 2, 2, 1, -1, -2, -2, -1};
+
+// Check if (x, y) is valid and not visited
+bool isSafe(int x, int y, vector<vector<int>>& board) {
+    return (x >= 0 && x < N && y >= 0 && y < N && board[x][y] == -1);
+}
+
+// Recursive function for Knight's Tour
+bool solveKT(int x, int y, int movei, vector<vector<int>>& board) {
+    if (movei == N*N) return true; // all squares visited
+
+    for (int k = 0; k < 8; k++) {
+        int nextX = x + dx[k];
+        int nextY = y + dy[k];
+        if (isSafe(nextX, nextY, board)) {
+            board[nextX][nextY] = movei;
+            if (solveKT(nextX, nextY, movei+1, board)) return true;
+            board[nextX][nextY] = -1; // backtrack
+        }
+    }
+    return false;
+}
+
+// Print the board
+void printBoard(vector<vector<int>>& board) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)
+            cout << setw(2) << board[i][j] << " ";
+        cout << "\n";
+    }
+}
+
+int main() {
+    vector<vector<int>> board(N, vector<int>(N, -1));
+
+    // Starting position
+    board[0][0] = 0;
+
+    if (solveKT(0, 0, 1, board))
+        printBoard(board);
+    else
+        cout << "No solution exists\n";
+}

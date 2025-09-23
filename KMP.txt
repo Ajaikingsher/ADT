@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+vector<int> computeLPSArray(const string &pat) {
+    int n = pat.size();
+    vector<int> lps(n);
+    int len = 0;  
+
+    for (int i = 1; i < n;) {
+        if (pat[i] == pat[len]) {
+            lps[i++] = ++len;
+        } else if (len > 0) {
+            len = lps[len - 1];  
+        } else {
+            lps[i++] = 0;
+        }
+    }
+    return lps;
+}
+
+int main() {
+    string pattern = "ababcabab";
+    vector<int> lps = computeLPSArray(pattern);
+
+    cout << "Pattern: " << pattern << "\n";
+    cout << "LPS Array: ";
+    for (int val : lps) cout << val << " ";
+    cout << "\n";
+
+    return 0;
+}

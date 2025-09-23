@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    vector<int> arr = {9, 4, 3, 8, 10, 2, 5};
+    
+    // Create a max-heap
+    priority_queue<int> pq(arr.begin(), arr.end());
+    
+    cout << "Sorted array: ";
+    while (!pq.empty()) {
+        cout << pq.top() << " "; // get max element
+        pq.pop();                // remove it
+    }
+    cout << "\n";
+}

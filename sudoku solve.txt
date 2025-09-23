@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 9;
+
+// Check if it's safe to put num at board[row][col]
+bool isSafe(int board[N][N], int row, int col, int num) {
+    for (int i = 0; i < N; i++) {
+        if (board[row][i] == num || board[i][col] == num) return false;
+        int startRow = 3 * (row / 3), startCol = 3 * (col / 3);
+        if (board[startRow + i / 3][startCol + i % 3] == num) return false;
+    }
+    return true;
+}
+
+// Solve the Sudoku
+bool solveSudoku(int board[N][N]) {
+    for (int row = 0; row < N; row++) {
+        for (int col = 0; col < N; col++) {
+            if (board[row][col] == 0) { // empty cell
+                for (int num = 1; num <= 9; num++) {
+                    if (isSafe(board, row, col, num)) {
+                        board[row][col] = num;
+                        if (solveSudoku(board)) return true;
+                        board[row][col] = 0; // backtrack
+                    }
+                }
+                return false; // no valid number found
+            }
+        }
+    }
+    return true; // solved
+}
+
+// Print the board
+void printBoard(int board[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)
+            cout << board[i][j] << " ";
+        cout << "\n";
+    }
+}
+
+// Main
+int main() {
+    int board[N][N] = {
+        {5,3,0,0,7,0,0,0,0},
+        {6,0,0,1,9,5,0,0,0},
+        {0,9,8,0,0,0,0,6,0},
+        {8,0,0,0,6,0,0,0,3},
+        {4,0,0,8,0,3,0,0,1},
+        {7,0,0,0,2,0,0,0,6},
+        {0,6,0,0,0,0,2,8,0},
+        {0,0,0,4,1,9,0,0,5},
+        {0,0,0,0,8,0,0,7,9}
+    };
+
+    if (solveSudoku(board))
+        printBoard(board);
+    else
+        cout << "No solution exists\n";
+}
