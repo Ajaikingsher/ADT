@@ -1,0 +1,1 @@
+document.querySelectorAll('.no-copy').forEach(el => el.classList.remove('no-copy'));
